@@ -36,7 +36,7 @@ public class TrashTrackerMain{
 		
 		File userFile = u.getUserFile();
 		ArrayList <String> stringArray = u.getUserInfo();
-		u.updateUserInfo(stringArray, "Admin", "overrid3!U", 100, true, userFile);
+		u.updateUserInfo(stringArray, "Admin", "overrid3!U", 1000, true, userFile);
 		System.out.println("main: " + userFile);
 
 		

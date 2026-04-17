@@ -21,8 +21,8 @@ public class UserWindow implements ActionListener{
 	private JLabel title = new JLabel();
 	private JButton dayCheckButton = new JButton("Check Day!");
 	private JButton coinCheckButton = new JButton("Check Coins!");
-	private JButton gardenCheckButton = new JButton("Check Garden!");
-	private JButton buyPlantButton = new JButton("Buy Plant!");
+	private JButton rewardsRedemption = new JButton("Redeem Rewards!");
+	private JButton tipsButtton = new JButton("Tips and Tricks!");
 	private JButton recycleButton = new JButton("Recycle Settings");
 	private JButton logOut = new JButton("Logout");
 	
@@ -51,13 +51,13 @@ public class UserWindow implements ActionListener{
 		coinCheckButton.setFocusable(false);
 		coinCheckButton.addActionListener(this);
 		
-		gardenCheckButton.setBounds(200, 250, 180, 30);
-		gardenCheckButton.setFocusable(false);
-		gardenCheckButton.addActionListener(this);
+		rewardsRedemption.setBounds(200, 250, 180, 30);
+		rewardsRedemption.setFocusable(false);
+		rewardsRedemption.addActionListener(this);
 		
-		buyPlantButton.setBounds(200, 300, 180, 30);
-		buyPlantButton.setFocusable(false);
-		buyPlantButton.addActionListener(this);
+		tipsButtton.setBounds(200, 300, 180, 30);
+		tipsButtton.setFocusable(false);
+		tipsButtton.addActionListener(this);
 		
 		recycleButton.setBounds(200, 350, 180, 30);
 		recycleButton.setFocusable(false);
@@ -70,8 +70,8 @@ public class UserWindow implements ActionListener{
 		frame.add(title);
 		frame.add(dayCheckButton);
 		frame.add(coinCheckButton);
-		frame.add(gardenCheckButton);
-		frame.add(buyPlantButton);
+		frame.add(rewardsRedemption);
+		frame.add(tipsButtton);
 		frame.add(recycleButton);
 		frame.add(logOut);
 
@@ -104,12 +104,14 @@ public class UserWindow implements ActionListener{
 			new CheckCoinWindow(currentUser, userPassword, currentCoins, recycleInterest);
 		}
 		
-		else if(e.getSource() == gardenCheckButton) {
-			//
+		else if(e.getSource() == rewardsRedemption) {
+			frame.dispose();
+			new RewardsWindow(currentUser, userPassword, currentCoins, recycleInterest);
 		}
 				
-		else if(e.getSource() == buyPlantButton) {
-			//
+		else if(e.getSource() == tipsButtton) {
+			frame.dispose();
+			new TipsWindow(currentUser, userPassword, currentCoins, recycleInterest);
 		}
 		
 		else if (e.getSource() == recycleButton) {
