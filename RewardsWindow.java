@@ -34,7 +34,8 @@ public class RewardsWindow implements ActionListener {
 		this.currentUser = username;
 		this.userPassword = password;
 		
-		
+		title.setBounds(170, 75, 280, 25);
+		title.setText("Welcome " + currentUser + "! You have " + currentCoins + " coins.");
 		redeemPrize1.setBounds(100, 150, 380, 30);
 		redeemPrize1.setFocusable(false);
 		redeemPrize1.addActionListener(this);
@@ -66,7 +67,7 @@ public class RewardsWindow implements ActionListener {
 		
 		frame.setTitle("Track Your Trash!");
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		frame.setSize(600,750);
+		frame.setSize(600,650);
 		frame.setLayout(null);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
