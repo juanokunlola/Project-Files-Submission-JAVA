@@ -1,21 +1,30 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: The CheckCollectionDayWindow.java class calls the checkCollectionDay(); function to learn the day trash is being collected, informs the user of this
+ * 	day, takes input from the user as to whether or not they have taken out their trash if it is collection day, rewards them with 5 coins if they have, and stores 
+ *  their new coin balance in the corresponding user info file
+ * Originates: UserWindow (dayCheckButton)
+ * Calls: CollectionDay, UserLogin
+ * Directs to: UserWindow, CheckRecycleDayWindow
+ * Contains: CheckCollectionDayWindow, getPaid()
+ * */
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-
 import javax.swing.*;
-
 
 public class CheckCollectionDayWindow implements ActionListener {
 	
-	private String currentUser;
+	private String currentUsername;
 	private String userPassword;
 	private int currentCoins;
 	private boolean recycleInterest;
+	private Person currentUser;
 
 	private JPanel panel = new JPanel();
 	private JLabel response1 = new JLabel("Placeholder text");
@@ -29,12 +38,14 @@ public class CheckCollectionDayWindow implements ActionListener {
 	
 	private boolean collectedTrash = false;
 	
-	public CheckCollectionDayWindow(String username, String password, int coins, boolean recycler) {
+	public CheckCollectionDayWindow(Person user) {
 		
-		this.currentCoins = coins;
-		this.recycleInterest = recycler;
-		this.currentUser = username;
-		this.userPassword = password;
+		
+		this.currentUser = user;
+		currentCoins = currentUser.getCoins();
+		recycleInterest = currentUser.getRecycle();
+		currentUsername = currentUser.getUsername();
+		userPassword = currentUser.getPassword();
 		
 		int cDayCheck = 0;
 		
@@ -86,62 +97,49 @@ public class CheckCollectionDayWindow implements ActionListener {
 			response1.setText("Trash is no longer being collected.");
 			response2.setText("");
 			frame.add(accept);
-		}
-		
-
-			
+		}	
 	}
-	
-
 	
 	public int getPaid() {
 		int payment = 0;
 		if(collectedTrash) {
 			payment = payment +5;
 		}
-		
 		return payment;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == trashCollected) {
+			JOptionPane.showMessageDialog(null, "You have earned 5 coins!", "Successful Collection!", 1);
 			frame.dispose();
 			collectedTrash = true;
-			currentCoins = currentCoins + getPaid();
+			currentUser.setCoins(currentUser.getCoins() + getPaid());
 			
 			UserLogin u = new UserLogin(true);
 			u.getFrame().dispose();
 			File userFile = u.getUserFile();
 			ArrayList <String> stringArray = u.getUserInfo();
-			u.updateUserInfo(stringArray, currentUser, userPassword, currentCoins, recycleInterest, userFile);
+			u.updateUserInfo(stringArray, currentUsername, userPassword, currentCoins, recycleInterest, userFile);
 			
-			
-			if(recycleInterest) {
-				new CheckRecycleDayWindow(currentUser, userPassword, currentCoins, recycleInterest);
+			if(currentUser.getRecycle()) {
+				new CheckRecycleDayWindow(currentUser);
 			}
 			else {
-				new UserWindow(currentUser, userPassword, currentCoins, recycleInterest);
+				new UserWindow(currentUser);
 			}
 		}
 		
 		else if (e.getSource() == notCollected || e.getSource() == accept) {
 			frame.dispose();	
-			if(recycleInterest) {
-				new CheckRecycleDayWindow(currentUser, userPassword, currentCoins, recycleInterest);
+			if(currentUser.getRecycle()) {
+				new CheckRecycleDayWindow(currentUser);
 			}
 			else {
-				new UserWindow(currentUser, userPassword, currentCoins, recycleInterest);
+				new UserWindow(currentUser);
 			}
 
 		}
 	}
 	
-	
-	public boolean getCollectedTrash() {
-		return collectedTrash;
-	}
-	
-	
-
 }

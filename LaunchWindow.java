@@ -1,11 +1,18 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: The LaunchWindow.java class creates the GUI window for users initializing the program, allowing them to choose between logging in as a individual user,
+ * 	a organization in charge of collection trash and/or recycling, and exiting the program entirely
+ * Originates: TrashTrackerMain, OrgWindow, UserWindow
+ * Directs to: UserLogin
+ * Contains: LaunchWindow
+ * */
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
 
 public class LaunchWindow implements ActionListener {
 

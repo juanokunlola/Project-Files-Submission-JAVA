@@ -1,15 +1,26 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: The UserSignUp.java class allows the user to sign up as either a individual (Person) or an organization, and launches the appropriate page upon a 
+ *  a successful sign up. Upon attempting to sign up, the program checks if the the user has entered a secure password, by checking for the presence of at 
+ *  least 8 characters, a capital letter, a number, and a symbol. As the program launches the appropriate page, it also provides an introductory message.
+ * Originates: UserLogin
+ * Calls: UserLogin
+ * Directs to: UserWindow, LaunchWindow
+ * Contains: UserSignUp, isPasswordStrong(String password)
+ * */
+
 import java.awt.Color;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -23,7 +34,8 @@ public class UserSignUp implements ActionListener {
 	private JLabel successMessage = new JLabel();
 	private JLabel failureMessage1 = new JLabel();
 	private JLabel failureMessage2 = new JLabel();
-	private Frame frame = new JFrame();
+	private JLabel failureMessage3 = new JLabel();
+	private JFrame frame = new JFrame();
 	private JTextField username = new JTextField();
 	private JPasswordField password = new JPasswordField();
 	private JButton backButton = new JButton("Return");
@@ -50,6 +62,7 @@ public class UserSignUp implements ActionListener {
 		successMessage.setBounds(100, 215, 200, 25);
 		failureMessage1.setBounds(50, 175, 275, 25);
 		failureMessage2.setBounds(25, 190, 355, 25);
+		failureMessage3.setBounds(50, 250, 200, 25);
 		frame.add(successMessage);
 		frame.add(failureMessage1);
 		frame.add(failureMessage2);
@@ -64,12 +77,12 @@ public class UserSignUp implements ActionListener {
 		frame.add(password);
 		frame.add(userEnter);
 		frame.setTitle("Track Your Trash!");
-		((JFrame) frame).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(400,350);
 		frame.setLayout(null);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		((JFrame) frame).getContentPane().setBackground(new Color(215,238,237));
+		frame.getContentPane().setBackground(new Color(215,238,237));
 	}
 	
 	@Override
@@ -91,11 +104,27 @@ public class UserSignUp implements ActionListener {
 				File logInFile = u.getLoginFile();
 				u.newLogIn(logIns, newUser, newPassword, userType, logInFile);
 				System.out.println(logIns);
+				frame.dispose();
+				if(userType == true) {
+					Person newLogin = new Person(newUser, newPassword, 0, false);
+					new UserWindow(newLogin);
+					JOptionPane.showMessageDialog(null, "Welcome to Trash Tracker!\nCheck when trash (and recycling!) is being collected,\n"
+							+ "Earn coins for taking it out, and Redeem those coins for Rewards!", "Welcome to Trash Tracker!", 1);
+				}
+				else if(userType == false) {
+					Organization newLoginO = new Organization(newUser, newPassword, DayOfWeek.MONDAY, DayOfWeek.TUESDAY);
+					new OrgWindow(newLoginO);
+					JOptionPane.showMessageDialog(null, "Welcome to Trash Tracker!\nUpdate your collection days so users know when you will be picking up"
+							+ " their trash and recycling!", "Welcome to Trash Tracker!", 1);
+				}
+				
+				
 			}
 			else {
 				successMessage.setText("");
 				failureMessage1.setText("Your password is not strong enough.");
-				failureMessage2.setText("Please include a symbol, number, and uppercase letter.");
+				failureMessage2.setText("Please include at least 8 characters, a symbol, number,");
+				failureMessage3.setText("and uppercase letter.");
 			}
 			
 		}

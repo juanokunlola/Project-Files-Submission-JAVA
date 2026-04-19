@@ -1,5 +1,17 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: The UserWindow.java class creates the GUI window for users that have logged in as individuals, providing access to the individual-only function
+ * 	pages where they can: check the day trash is being collected, check their coin balance, redeem rewards with those coins, read tips for reducing waste, and 
+ * 	toggle their interest in whether or not they want to be reminded of recycling opportunities. Upon logging out from this page, all the changes made to the user
+ * 	information is saved in the corresponding files for the next time they log in.
+ * Originates: UserLogin, UserSignUp, CheckCoinWindow, CheckCollectionWindow, CheckRecycleDayWindow, ChooseRecycleWindow, RewardsWindow 
+ * Calls: UserLogin
+ * Directs to: CheckCollectionDayWindow, CheckCoinWindow, RewardsWindow, TipsWindow, ChooseRecycleWindow, LaunchWindow
+ * Contains: UserWindow
+ * */
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,11 +21,11 @@ import javax.swing.*;
 
 public class UserWindow implements ActionListener{
 
-	private String currentUser;
+	private String currentUsername;
 	private String userPassword;
 	private int currentCoins;
 	private boolean recycleInterest;
-	private Person currentPerson;
+	private Person currentUser;
 	
 	
 	private JFrame frame = new JFrame();
@@ -28,20 +40,18 @@ public class UserWindow implements ActionListener{
 	
 
 	
-	public UserWindow(String username, String password, int coins, boolean recycler) {
+	public UserWindow(Person user) {
 		
-		this.currentCoins = coins;
-		this.recycleInterest = recycler;
-		this.currentUser = username;
-		this.userPassword = password;
-		
-		
-		ArrayList <Plant> currentGarden = new ArrayList<>();
-		currentPerson = new Person(username, password, coins, currentGarden, recycler);
+		this.currentUser = user;
+		currentCoins = currentUser.getCoins();
+		recycleInterest = currentUser.getRecycle();
+		currentUsername = currentUser.getUsername();
+		userPassword = currentUser.getPassword();
+		 
 		
 		panel.setLayout(null);
 		title.setBounds(235, 80, 250, 30);
-		title.setText("Welcome, " + currentUser + "!");
+		title.setText("Welcome, " + currentUsername + "!");
 		
 		dayCheckButton.setBounds(200, 150, 180, 30);
 		dayCheckButton.setFocusable(false);
@@ -89,9 +99,7 @@ public class UserWindow implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == dayCheckButton) {
 			frame.dispose();
-			new CheckCollectionDayWindow(currentUser, userPassword, currentCoins, recycleInterest);
-			//System.out.println("coins: " + currentCoins);
-			
+			new CheckCollectionDayWindow(currentUser);			
 		}
 		
 		else if(e.getSource() == coinCheckButton) {
@@ -99,57 +107,37 @@ public class UserWindow implements ActionListener{
 			UserLogin u = new UserLogin(true);
 			u.getFrame().dispose();
 			ArrayList <String> stringArray = u.getUserInfo();
-			currentCoins = UserLogin.fetchReturnerCoins(stringArray, currentUser, userPassword, currentCoins, recycleInterest);
-			//System.out.println("coincheckButton coins: " + currentCoins);
-			new CheckCoinWindow(currentUser, userPassword, currentCoins, recycleInterest);
+			currentUser.setCoins(UserLogin.fetchReturnerCoins(stringArray, currentUsername,userPassword, currentCoins, recycleInterest));
+			new CheckCoinWindow(currentUser);
 		}
 		
 		else if(e.getSource() == rewardsRedemption) {
 			frame.dispose();
-			new RewardsWindow(currentUser, userPassword, currentCoins, recycleInterest);
+			new RewardsWindow(currentUser);
 		}
 				
 		else if(e.getSource() == tipsButtton) {
 			frame.dispose();
-			new TipsWindow(currentUser, userPassword, currentCoins, recycleInterest);
+			new TipsWindow(currentUser);
 		}
 		
 		else if (e.getSource() == recycleButton) {
 			frame.dispose();
-			new ChooseRecycleWindow(currentUser, userPassword, currentCoins, recycleInterest);
+			new ChooseRecycleWindow(currentUser);
 			
 		}
 				
 		else if(e.getSource() == logOut) {
-			//since gardens cannot be maintained, progress is converted back into coins
-			currentPerson.setCoins(currentPerson.getCoins() + currentPerson.countPlantType("Tree") + currentPerson.countPlantType("Flower"));
-			currentCoins = currentPerson.getCoins();
-			
 			//store updated user data in file
 			UserLogin u = new UserLogin(true);
 			u.getFrame().dispose();
 			File userFile = u.getUserFile();
 			ArrayList <String> stringArray = u.getUserInfo();
-			u.updateUserInfo(stringArray, currentUser, userPassword, currentCoins, recycleInterest, userFile);
+			u.updateUserInfo(stringArray, currentUser.getUsername(), currentUser.getPassword(), currentUser.getCoins(), currentUser.getRecycle(), userFile);
 			
 			frame.dispose();
 			new LaunchWindow();
 		}
-			
-				
-		//String gardenName = JOptionPane.showInputDialog("What would you like to name your garden?");
-	}
 
-	
-	public void buyPlant(int coins, ArrayList <Plant> garden) { 
-		//
-	}
-	
-	public void recycleTip() {
-		//
-	}
-
-	public boolean getRecycleInterest() {
-		return recycleInterest;
 	}
 }

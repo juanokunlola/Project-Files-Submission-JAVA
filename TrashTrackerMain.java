@@ -1,31 +1,23 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: The TrashTrackerMain.java class initializes the program. 
+ * Calls: UserLogin
+ * Directs to: LaunchWindow
+ * Contains: TrashTrackerMain, main(String[] args)
+ * */
+
 import java.util.ArrayList;
 import java.io.File;
-
 
 public class TrashTrackerMain{
 		
 	
 	public static void main(String[] args) {
 
-		/*Scanner scanner = new Scanner(System.in);
-		ArrayList <Plant> garden = new ArrayList<>();
-		
-		//UserLogin login = new UserLogin();
-		CollectionDay c = new CollectionDay();
-		Person u = new Person("name", "password", 0, garden, true);
-		//Organization org = new Organization("name", "password", c.getCollectionDay(), c.getRecycleDay()); 
-		
-		c.checkCollectionDay();
-		c.checkRecycleDay();
-		garden.add(Plant.SNAPDRAGON);
-		garden.add(Plant.CEDAR);
-		u.displayFlowers();
-		u.displayTrees();*/
-		//
-		
-		//Automatically set up an admin password + previously existing info for demo purposes
+		/*Automatically sets up an Admin password + previously existing info for demo purposes.
+		This resets the Admin accounts coins every time the program is launched*/
 		UserLogin u = new UserLogin(true);
 		u.getFrame().dispose();
 		
@@ -37,28 +29,10 @@ public class TrashTrackerMain{
 		File userFile = u.getUserFile();
 		ArrayList <String> stringArray = u.getUserInfo();
 		u.updateUserInfo(stringArray, "Admin", "overrid3!U", 1000, true, userFile);
-		System.out.println("main: " + userFile);
-
+		
 		
 		new LaunchWindow();
-	
-		
-		//log out writes user data to the file, and converts the user's garden into coins to save progress, even if the garden is not saved
-		//u.setCoins(u.getCoins() + u.countPlantType("Tree" + u.countPlantType("Flower")));;
-		//log out function should trigger new launch window. wherever that ends up
-		
-		
-		
-		
 
-		
-		
-	
-		
-		//System.out.println("");
-		
-		
-		//scanner.close();
 	}
 
 }

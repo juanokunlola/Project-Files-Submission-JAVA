@@ -1,5 +1,11 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: The Organization.java class extends the basic User class, adding the days the organization collects trash and recycling.
+ * Contains: Organization, getCollectionDay(), setCollectionDay(DayOfWeek collectionDay), getRecycleDay(), setRecycleDay(DayOfWeek recycleDay) 
+ * */
+
 import java.time.DayOfWeek;
 
 public class Organization extends User {
@@ -12,17 +18,6 @@ public class Organization extends User {
 		this.collectionDay = collectionDay;
 		this.recycleDay = recycleDay;
 	}
-	
-	//GUI Input for Organizations to update their Trash Collection Days [UNFINISHED]
-	public void updateCollectionDay(DayOfWeek newCollectionDay) {
-		setCollectionDay(newCollectionDay);
-	}
-	
-	//GUI Input for Organizations to update their Recycle Collection Days [UNFINISHED]
-	public void updateRecycleDay(DayOfWeek newRecycleDay) {
-		setRecycleDay(newRecycleDay);
-	}
-
 	
 	//getters + setters
 	public DayOfWeek getCollectionDay() {

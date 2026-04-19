@@ -1,63 +1,24 @@
 package javaTrashTracker;
 
-import java.util.ArrayList;
+/*
+ * Author: Rachel Eddleman
+ * Purpose: The Person.java class extends the basic User class, adding the individual user's coin collection, and whether or not they are interested in receiving
+ *  information about recycling collection. 
+ * Called by: UserLogin, UserSignUp
+ * Contains: Person, getCoins(), setCoins(int uCoins), getRecycle(), setRecycle(boolean choice)
+ * */
+
 
 public class Person extends User{
 
 	private int userCoins;
-	private ArrayList <Plant> userGarden = new ArrayList<>();
 	private boolean recycle;
 	
-	public Person(String user, String password, int uCoins, ArrayList <Plant> userGarden, boolean recycleChoice) {
+	public Person(String user, String password, int uCoins, boolean recycleChoice) {
 		super(user, password);
 		this.userCoins = uCoins;
-		this.userGarden = userGarden;
 		this.recycle = recycleChoice;
 	}
-	
-	public void successfulDisposal(boolean success){
-		this.userCoins = userCoins += 5;
-	}
-	
-	
-	//displays all Flowers in the garden
-	public void displayFlowers() {
-		System.out.println("Your Flowers: ");
-		for(int i = 0; i < userGarden.size(); i++) {
-			if(userGarden.get(i).getType().equals("Flower")) {
-				System.out.println(userGarden.get(i).plantDisplay());
-			}
-		}
-	}
-	
-	
-	//displays all Trees in the garden
-	public void displayTrees() {
-		System.out.println("Your Trees: ");
-		for(int i = 0; i < userGarden.size(); i++) {
-			if(userGarden.get(i).getType().equals("Tree")) {
-				System.out.println(userGarden.get(i).plantDisplay());
-			}
-		}
-	}
-	
-	//Counts occurrences of Type of plant
-	
-	public int countPlantType(String type) {
-		int count = 0;
-		
-		for(int i = 0; i < userGarden.size(); i++) {
-			if(userGarden.get(i).getType().equals(type)) {
-				count++;
-			}
-		}
-		
-		return count;
-		
-	}
-	
-	
-	
 	
 	//getters and setters
 	public int getCoins() {
@@ -66,14 +27,6 @@ public class Person extends User{
 	
 	public void setCoins(int uCoins) {
 		this.userCoins = uCoins;
-	}
-	
-	public ArrayList<Plant> getGarden() {
-		return userGarden;
-	}
-	
-	public void setGarden(ArrayList<Plant> garden) {
-		this.userGarden = garden;
 	}
 	
 	public boolean getRecycle() {

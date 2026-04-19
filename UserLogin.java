@@ -1,5 +1,18 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: The UserLogin.java class creates the GUI interface for a user to login to their account, separating them based on whether they are an individual 
+ *  user, or logging in on behalf of an organization. The program is types sensitive, checks if they are a returning user, and accesses their previous data 
+ *  stored in the user files for future use if so. If the username or password is incorrect, the program alerts the user. If the user does not have a previously 
+ *  existing login, they can access the class for creating a new user, and return back to the launch window and attempt to log in as the other type of user.
+ * Originates: LaunchWindow
+ * Called By: CheckCollectionDayWindow, CheckRecycleDayWindow, RewardsWindow, TrashTrackerMain, UserSignUp, UserWindow
+ * Directs to: UserWindow, OrgWindow, UserSignUp, LaunchWindow
+ * Contains: UserLogin, newLogIn(...), returningUserCheck(...), fetchReturnerCoins(...), fetchReturnerRecycling(...), updateUserInfo(...),
+ *  fileReader(File logs, ArrayList<String> fileInfo), fileWriter(File file, ArrayList<String> fileInfo), getUserInfo(), getLoginInfo(), getUserFile(), 
+ *  getLoginFile(), getFrame()  
+ * */
 
 import java.util.StringTokenizer;
 import javax.swing.*;
@@ -8,7 +21,7 @@ import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
-//import java.time.DayOfWeek;
+import java.time.DayOfWeek;
 
 public class UserLogin implements ActionListener {
 
@@ -25,7 +38,7 @@ public class UserLogin implements ActionListener {
 	private JLabel successMessage = new JLabel();
 	private JLabel failureMessage1 = new JLabel();
 	private JLabel failureMessage2 = new JLabel();
-	private Frame frame = new JFrame();
+	private JFrame frame = new JFrame();
 	private JTextField username = new JTextField();
 	private JPasswordField password = new JPasswordField();
 	private JButton backButton = new JButton("Return");
@@ -93,16 +106,12 @@ public class UserLogin implements ActionListener {
 		frame.add(newUserButton);
 		frame.add(loginButton);
 		frame.setTitle("Track Your Trash!");
-		((JFrame) frame).setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setSize(400,350);
 		frame.setLayout(null);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		((JFrame) frame).getContentPane().setBackground(new Color(215,238,237));
-		
-	
-		
-		return;//test if returns to Launch window choice thing later
+		frame.getContentPane().setBackground(new Color(215,238,237));
 	}
 	
 
@@ -112,7 +121,6 @@ public class UserLogin implements ActionListener {
 		
 		if (e.getSource() == loginButton) {
 			fileReader(userLogIns, logInInfo);
-			System.out.println("file info:" + logInInfo);
 			String passwordInput = new String(password.getPassword());
 			
 			logIn = returningUserCheck(logInInfo, username.getText(), passwordInput, type);
@@ -139,21 +147,19 @@ public class UserLogin implements ActionListener {
 				fileReader(userFiles, userInfo);
 				coins = fetchReturnerCoins(userInfo, userInput, passwordInput, coins, recycler);
 				recycler = fetchReturnerRecycling(userInfo, userInput, passwordInput, coins, recycler);
+				Person thisUser = new Person(userInput, passwordInput, coins, recycler);
 				
 				frame.dispose();
-				//System.out.println("return: " + userInput + ", " + passwordInput + ", " + coins + ", " + recycler);
-				new UserWindow(userInput, passwordInput, coins, recycler);
+				new UserWindow(thisUser);
 				
 				}
 			
 			else if(type == false) {	
 				String userInput = username.getText();
 				frame.dispose();
-				new OrgWindow(userInput, passwordInput);
-				} 
-			
-			//System.out.println("login button check: " + username.getText() + ", " + password.getText() + ", " + type + ", " + logIn);
-			
+				Organization logOrg = new Organization(userInput, passwordInput, DayOfWeek.MONDAY, DayOfWeek.TUESDAY);
+				new OrgWindow(logOrg);
+				} 			
 	        } 
 		
 			
@@ -170,119 +176,108 @@ public class UserLogin implements ActionListener {
 	}
 	
 
-public void newLogIn(ArrayList<String> logInfo, String user, String password, boolean type, File file) {
-	System.out.println("new log in password: " + password);
-	
-	fileReader(file, logInfo);
-	
-	if(type == true) {
-		logInfo.add(user + ", " + password + ", U");
-	}
-	else {
-		logInfo.add(user + ", " + password + ", O");
-	}
-	
-	fileWriter(file, logInfo);
-}
-	
-public static boolean returningUserCheck(ArrayList<String> logInfo, String user, String password, boolean type) {
-	boolean logIn = false;
-	String userType = "";
-	if(type == true) {
-		userType = "U";
-	}
-	else if (type == false) {
-		userType = "O";
+	public void newLogIn(ArrayList<String> logInfo, String user, String password, boolean type, File file) {
+		
+		fileReader(file, logInfo);
+		
+		if(type == true) {
+			logInfo.add(user + ", " + password + ", U");
+		}
+		else {
+			logInfo.add(user + ", " + password + ", O");
+		}
+		
+		fileWriter(file, logInfo);
 	}
 	
-	String userCheck = user + ", " + password + ", " + userType;
-	System.out.println("usercheck (returningUserCheck):" + userCheck);
-	
-	for (String u: logInfo) {
-		System.out.println(u);
-        if (u.equals(userCheck)) {
-        	logIn = true;
-            break;
-        	}
+	public static boolean returningUserCheck(ArrayList<String> logInfo, String user, String password, boolean type) {
+		boolean logIn = false;
+		String userType = "";
+		if(type == true) {
+			userType = "U";
+		}
+		else if (type == false) {
+			userType = "O";
+		}
+		
+		String userCheck = user + ", " + password + ", " + userType;
+		
+		for (String u: logInfo) {
+	        if (u.equals(userCheck)) {
+	        	logIn = true;
+	            break;
+	        	}
+		}
+		return logIn;
 	}
-	return logIn;
-}
 
-public static int fetchReturnerCoins(ArrayList<String> userInfo, String user, String password, int coins, boolean toggler) {
+	public static int fetchReturnerCoins(ArrayList<String> userInfo, String user, String password, int coins, boolean toggler) {
+		
+		fileReader(userFiles, userInfo);
+		
+		String userID = user + ", " + password;
+		int funds = 0;
+		for (String u: userInfo) {
 	
-	fileReader(userFiles, userInfo);
-	
-	String userID = user + ", " + password;
-	//System.out.println("fetchCoins; ID: " + userID);
-	int funds = 0;
-	for (String u: userInfo) {
-		//System.out.println("fetchCoins; loop: " + u);
-		if (u.startsWith(userID)) {
-			System.out.println(u);
-			StringTokenizer tokenizer = new StringTokenizer(u, ",");
-			user = tokenizer.nextToken().trim();
-			password = tokenizer.nextToken().trim();
-			funds =  Integer.parseInt(tokenizer.nextToken().trim());
-			toggler = Boolean.parseBoolean(tokenizer.nextToken().trim());
-			System.out.println("fetch: " + user + ", " + password + ", " + coins + ", " + toggler);
-			}
+			if (u.startsWith(userID)) {
+				StringTokenizer tokenizer = new StringTokenizer(u, ",");
+				user = tokenizer.nextToken().trim();
+				password = tokenizer.nextToken().trim();
+				funds =  Integer.parseInt(tokenizer.nextToken().trim());
+				toggler = Boolean.parseBoolean(tokenizer.nextToken().trim());
+				}
+		}
+		
+		return funds;
 	}
-	
-	return funds;
-}
 
-public static boolean fetchReturnerRecycling(ArrayList<String> userInfo, String user, String password, int coins, boolean toggler) {
+	public static boolean fetchReturnerRecycling(ArrayList<String> userInfo, String user, String password, int coins, boolean toggler) {
+		
+		fileReader(userFiles, userInfo);
+		
+		String userID = user + ", " + password;
+		for (String u: userInfo) {
 	
-	fileReader(userFiles, userInfo);
-	
-	String userID = user + ", " + password;
-	for (String u: userInfo) {
-
-		if (u.startsWith(userID)) {
-			System.out.println(u);
-			StringTokenizer tokenizer = new StringTokenizer(u, ",");
-			user = tokenizer.nextToken().trim();
-			password = tokenizer.nextToken().trim();
-			coins =  Integer.parseInt(tokenizer.nextToken().trim());
-			toggler = Boolean.parseBoolean(tokenizer.nextToken().trim());
-			System.out.println("fetch: " + user + ", " + password + ", " + coins + ", " + toggler);
-			}
+			if (u.startsWith(userID)) {
+				StringTokenizer tokenizer = new StringTokenizer(u, ",");
+				user = tokenizer.nextToken().trim();
+				password = tokenizer.nextToken().trim();
+				coins =  Integer.parseInt(tokenizer.nextToken().trim());
+				toggler = Boolean.parseBoolean(tokenizer.nextToken().trim());
+				}
+		}
+		
+		return toggler;
 	}
-	
-	return toggler;
-}
 
-public void updateUserInfo(ArrayList<String> userInfo, String user, String password, int coins, boolean toggle, File file) {
-	
-	fileReader(file, userInfo);
-	
-	String userID = user + ", " + password;
-	int index = 0;
-	boolean updated = false;
-	String savedInfo = user + ", " + password + "," + coins + "," + toggle;
-	
-	for (String u: userInfo) {
-        if (u.startsWith(userID)) {
-            userInfo.set(index, savedInfo);
-            System.out.println(userInfo.get(index));
-            updated = true;
-            break;
-        	}
-        index++;
-        }
-	
-	if(updated == false) {
-		userInfo.add(savedInfo);
+	public void updateUserInfo(ArrayList<String> userInfo, String user, String password, int coins, boolean toggle, File file) {
+		
+		fileReader(file, userInfo);
+		
+		String userID = user + ", " + password;
+		int index = 0;
+		boolean updated = false;
+		String savedInfo = user + ", " + password + "," + coins + "," + toggle;
+		
+		for (String u: userInfo) {
+	        if (u.startsWith(userID)) {
+	            userInfo.set(index, savedInfo);
+	            updated = true;
+	            break;
+	        	}
+	        index++;
+	        }
+		
+		if(updated == false) {
+			userInfo.add(savedInfo);
+		}
+		
+		fileWriter(file, userInfo);
 	}
-	
-	System.out.println("userinfo string array: " + userInfo /*+ " updated: " + updated + " saved info: " + savedInfo*/);
-	
-	fileWriter(file, userInfo);
-}
 	
 	//FILE NONSENSE
 
-public static void fileReader(File logs, ArrayList<String> fileInfo) { //add file once we figure that out
+	public static void fileReader(File logs, ArrayList<String> fileInfo) { 
 		
 		//read file setup
 		try {
@@ -292,20 +287,16 @@ public static void fileReader(File logs, ArrayList<String> fileInfo) { //add fil
 			int i = 0;
 			
 			while ((line = logsFile.readLine()) != null) {
-				//System.out.println(i + ". " + line); 
 			    if (!fileInfo.contains(line)) {
 			    	fileInfo.add(i, line);
 			    	i++;
 			    }
-			
-				}
-
+			}
 			logsFile.close();
 			}
 			catch (IOException e) {
 			System.err.println("Error reading the file: " + e.getMessage());
-			}
-		
+		}
 	}
 	
 	public static void fileWriter(File file, ArrayList<String> fileInfo) {
@@ -321,19 +312,18 @@ public static void fileReader(File logs, ArrayList<String> fileInfo) { //add fil
 			}
 			
 			fileW.close();
-			}
-			catch (Exception e) {
+			}catch (Exception e) {
 			e.getStackTrace();
 			}
 	}
 	
+	//Getters and setters
 	
 	public ArrayList<String> getUserInfo() {
 		return userInfo;
 	}
 	
 	public ArrayList<String> getLoginInfo() {
-		//System.out.println("in-class getter:" + logInInfo);
 		return logInInfo;
 	}
 	

@@ -1,5 +1,13 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: the ChooseRecycleWindow.java class takes the input from the user to determine whether or not they want to see the notifications for Recycling days
+ * Originates: UserWindow (recycleButton)
+ * Directs to: UserWindow
+ * Contains: ChooseRecycleWindow
+ * */
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,9 +16,7 @@ import javax.swing.*;
 
 public class ChooseRecycleWindow implements ActionListener {
 
-	private String currentUser;
-	private String userPassword;
-	private int currentCoins;
+	private Person currentUser;
 	private boolean recycleInterest;
 	
 	private JButton accept = new JButton("Okay");
@@ -19,12 +25,11 @@ public class ChooseRecycleWindow implements ActionListener {
 	private JPanel panel = new JPanel();
 	private JLabel label = new JLabel("Are you interested in recieving information about recycling days?");
 	
-	public ChooseRecycleWindow(String username, String password, int coins, boolean recycler) {
+	public ChooseRecycleWindow(Person user) {
 		
-		this.currentCoins = coins;
-		this.recycleInterest = recycler;
-		this.currentUser = username;
-		this.userPassword = password;
+		this.currentUser = user;
+		recycleInterest = currentUser.getRecycle();
+
 		
 		panel.setLayout(null);
 		accept.setBounds(205, 225, 65, 30);
@@ -46,7 +51,6 @@ public class ChooseRecycleWindow implements ActionListener {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		frame.getContentPane().setBackground(new Color(215,238,237));
-		//
 	}
 	
 	@Override
@@ -54,13 +58,15 @@ public class ChooseRecycleWindow implements ActionListener {
 		if ( e.getSource() == accept) {
 			if(recycleCheck.isSelected()) {
 				recycleInterest = true;
+				currentUser.setRecycle(recycleInterest);
 			}
 			else {
 				recycleInterest = false;
+				currentUser.setRecycle(recycleInterest);
 			}
 			
 			frame.dispose();	
-			new UserWindow(currentUser, userPassword, currentCoins, recycleInterest);
+			new UserWindow(currentUser);
 		}
 	}
 

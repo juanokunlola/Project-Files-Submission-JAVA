@@ -1,5 +1,13 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: The TipsWindow.java class creates the GUI window for displaying three different recycling tips to educate the user. 
+ * Originates: UserWindow (tipsButtton)
+ * Directs to: UserWindow
+ * Contains: TipsWindow
+ * */
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,10 +19,7 @@ import javax.swing.JPanel;
 
 public class TipsWindow implements ActionListener {
 	
-	private String currentUser;
-	private String userPassword;
-	private int currentCoins;
-	private boolean recycleInterest;
+	private Person currentUser;
 	
 	private JPanel panel = new JPanel();
 	private JLabel text = new JLabel("---Tips On Reducing Waste---");
@@ -24,12 +29,9 @@ public class TipsWindow implements ActionListener {
 	private JFrame frame = new JFrame();
 	private JButton accept = new JButton("Return");
 
-	TipsWindow(String username, String password, int coins, boolean recycler){
+	TipsWindow(Person user){
 		
-		this.currentCoins = coins;
-		this.recycleInterest = recycler;
-		this.currentUser = username;
-		this.userPassword = password;
+		this.currentUser = user;
 		
 		panel.setLayout(null);
 		text.setBounds(275, 50, 200, 25);
@@ -62,7 +64,7 @@ public class TipsWindow implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == accept) {
 			frame.dispose();
-			new UserWindow(currentUser, userPassword, currentCoins, recycleInterest);
+			new UserWindow(currentUser);
 		}
 		
 	}

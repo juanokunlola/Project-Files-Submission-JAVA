@@ -1,5 +1,12 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: the User class contains the userName and password variables.
+ * Subclasses: Person, Organization
+ * Contains: User, getUsername(), setUsername(String user), getPassword(), setPassword(String password)
+ * */
+
 public class User {
 
 	private String userName;

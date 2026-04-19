@@ -1,18 +1,26 @@
 package javaTrashTracker;
 
+/*
+ * Author: Rachel Eddleman
+ * Purpose: The CheckRecycleDayWindow.java class calls the checkRecycleDay(); function to learn the day recycling is being collected, informs the user of this
+ * 	day, takes input from the user as to whether or not they have taken out their recycling if it is collection day, rewards them with 5 coins if they have, 
+ *  and stores their new coin balance in the corresponding user info file
+ * Originates: CheckRecycleDayWindow (if getRecycle())
+ * Calls: CollectionDay, UserLogin
+ * Directs to: UserWindow
+ * Contains: CheckRecycleDayWindow, getPaid()
+ * */
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.File;
+import java.util.ArrayList;
 import javax.swing.*;
 
 public class CheckRecycleDayWindow implements ActionListener {
 
-	
-	private String currentUser;
-	private String userPassword;
-	private int currentCoins;
-	private boolean recycleInterest;
+	private Person currentUser;
 
 	private JButton reyclingCollected = new JButton("Yes");
 	private JButton notCollected = new JButton("No");
@@ -24,13 +32,10 @@ public class CheckRecycleDayWindow implements ActionListener {
 	
 	private boolean collectedRecycling = false;
 	
-	public CheckRecycleDayWindow(String username, String password, int coins, boolean recycler) {
+	public CheckRecycleDayWindow(Person user) {
 		
-		this.currentCoins = coins;
-		this.recycleInterest = recycler;
-		this.currentUser = username;
-		this.userPassword = password;
-	
+		this.currentUser = user;
+
 		int rDayCheck = 0;
 		
 		
@@ -85,43 +90,44 @@ public class CheckRecycleDayWindow implements ActionListener {
 			response2.setText("");
 			frame.add(accept);
 		}
-		
-	
-		
 	}
 	
 
-	
 	public int getPaid() {
 		int payment = 0;
 		if(collectedRecycling) {
 			payment = payment +5;
 		}
-		
 		return payment;
 	}
+	
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		 if (e.getSource() == reyclingCollected) {
+			JOptionPane.showMessageDialog(null, "You have earned 5 coins!", "Successful Recycling!", 1);
 			frame.dispose();
 			collectedRecycling = true;
-			currentCoins = currentCoins + getPaid();
-			new UserWindow(currentUser, userPassword, currentCoins, recycleInterest);
+			currentUser.setCoins(currentUser.getCoins() + getPaid());
+			
+			UserLogin u = new UserLogin(true);
+			u.getFrame().dispose();
+			File userFile = u.getUserFile();
+			ArrayList <String> stringArray = u.getUserInfo();
+			u.updateUserInfo(stringArray, currentUser.getUsername(), currentUser.getPassword(), currentUser.getCoins(), currentUser.getRecycle(), userFile);
+			
+			new UserWindow(currentUser);
 		}
 		else if (e.getSource() == notCollected || e.getSource() == accept) {
 			frame.dispose();	
-			new UserWindow(currentUser, userPassword, currentCoins, recycleInterest);
-		}
-		
+			new UserWindow(currentUser);
+		}	
 	}
 	
 	
 	public boolean getCollectedRecycling() {
 		return collectedRecycling;
 	}
-	
-	
 
 }
 
